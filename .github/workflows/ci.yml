@@ -1,33 +1,62 @@
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+name: Python CI
 
-image: python:3.7
+on:
+  push:
+    branches:
+      - test_CI
+  pull_request:
+    branches:
+      - test_CI
 
+jobs:
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run mypy
+        run: mypy src/
 
-stages:
-  - test
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt black
+      - name: Run black
+        run: black --diff --check src/
 
+  isort:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt isort
+      - name: Run isort
+        run: isort --check-only src/
 
-before-script:
-    - pip install -r requirements.txt
-
-mypy:
-  stage: test
-  script:
-    - mypy src/
-
-black:
-  stage: test
-  script:
-    - black --diff --check src/
-
-isort:
-  stage: test
-  script:
-    - isort --check-only src/
-
-flask8:
-  stage: test
-  script:
-    - flake8 src/
+  flake8:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install -r requirements.txt flake8
+      - name: Run flake8
+        run: flake8 src/
