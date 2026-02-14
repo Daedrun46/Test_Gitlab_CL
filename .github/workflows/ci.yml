@@ -3,60 +3,38 @@ name: Python CI
 on:
   push:
     branches:
-      - test_CI
+      - main
   pull_request:
     branches:
-      - test_CI
+      - main
 
 jobs:
-  mypy:
+  lint-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install -r requirements.txt black isort flake8 mypy pytest
+
       - name: Run mypy
         run: mypy src/
 
-  black:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: pip install -r requirements.txt black
       - name: Run black
         run: black --diff --check src/
 
-  isort:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: pip install -r requirements.txt isort
       - name: Run isort
         run: isort --check-only src/
 
-  flake8:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install dependencies
-        run: pip install -r requirements.txt flake8
       - name: Run flake8
         run: flake8 src/
+
+      - name: Run tests
+        run: pytest
