@@ -42,12 +42,10 @@ async def get_recipes(db: AsyncSession = Depends(get_db)):  # noqa: B008
     response_model=RecipeDetail,
     summary="Получить рецепт",
     description=(
-        "Возвращает детальную информацию о рецепте и увеличивает "
-        "счётчик просмотров."
+        "Возвращает детальную информацию о рецепте и увеличивает " "счётчик просмотров."
     ),
 )
-async def get_recipe(recipe_id: int,
-                     db: AsyncSession = Depends(get_db)):  # noqa: B008
+async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):  # noqa: B008
     recipe = await db.get(Recipe, recipe_id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")

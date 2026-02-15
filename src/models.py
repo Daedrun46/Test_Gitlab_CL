@@ -26,12 +26,8 @@ class Recipe(Base):
         doc="Уникальный идентификатор рецепта",
     )
     title = Column(String(255), nullable=False, doc="Название рецепта")
-    cooking_time = Column(
-        Integer, nullable=False, doc="Время приготовления в минутах"
-    )
-    ingredients = Column(
-        Text, nullable=False, doc="Список ингредиентов, через запятую"
-    )
+    cooking_time = Column(Integer, nullable=False, doc="Время приготовления в минутах")
+    ingredients = Column(Text, nullable=False, doc="Список ингредиентов, через запятую")
     description = Column(
         Text, nullable=False, doc="Подробная инструкция по приготовлению"
     )
