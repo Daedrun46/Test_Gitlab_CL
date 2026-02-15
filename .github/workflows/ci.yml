@@ -1,6 +1,5 @@
 name: Python CI
 
-
 on:
   push:
     branches:
@@ -23,10 +22,12 @@ jobs:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt black isort flake8 mypy pytest
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Run mypy
-        run: mypy src/ --ignore-missing-imports
+        run: mypy src/
 
       - name: Run black
         run: black --diff --check src/
@@ -38,4 +39,4 @@ jobs:
         run: flake8 src/
 
       - name: Run tests
-        run: pytest
+        run: pytest -v
