@@ -10,7 +10,9 @@ class RecipeListItem(BaseModel):
 
     id: int = Field(..., description="Уникальный идентификатор рецепта")
     title: str = Field(..., description="Название рецепта")
-    cooking_time: int = Field(..., description="Время приготовления в минутах")
+    cooking_time: int = Field(
+        ..., description="Время приготовления в минутах"
+    )
     views: int = Field(..., description="Количество просмотров рецепта")
 
 
@@ -21,9 +23,13 @@ class RecipeDetail(BaseModel):
 
     id: int = Field(..., description="Уникальный идентификатор рецепта")
     title: str = Field(..., description="Название рецепта")
-    cooking_time: int = Field(..., description="Время приготовления в минутах")
+    cooking_time: int = Field(
+        ..., description="Время приготовления в минутах"
+    )
     ingredients: List[str] = Field(..., description="Список ингредиентов")
-    description: str = Field(..., description="Подробная инструкция по приготовлению")
+    description: str = Field(
+        ..., description="Подробная инструкция по приготовлению"
+    )
     views: int = Field(..., description="Количество просмотров рецепта")
 
 
@@ -33,6 +39,10 @@ class RecipeCreate(BaseModel):
     """
 
     title: str = Field(..., description="Название рецепта")
-    cooking_time: int = Field(..., description="Время приготовления в минутах")
+    cooking_time: int = Field(
+        ..., description="Время приготовления в минутах"
+    )
     ingredients: List[str] = Field(..., description="Список ингредиентов")
-    description: str = Field(..., description="Подробная инструкция по приготовлению")
+    description: str = Field(
+        ..., description="Подробная инструкция по приготовлению"
+    )
