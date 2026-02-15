@@ -1,17 +1,19 @@
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import FastAPI, Depends, HTTPException, status
-from sqlalchemy import select, desc
 from contextlib import asynccontextmanager
+
+from fastapi import Depends, FastAPI, HTTPException, status
+from sqlalchemy import desc, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db, init_db
 from models import Recipe
-from schemas import RecipeCreate, RecipeListItem, RecipeDetail
+from schemas import RecipeCreate, RecipeDetail, RecipeListItem
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await init_db()
     yield
+
 
 app = FastAPI(
     title="Cookbook API",
@@ -19,7 +21,6 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
-
 
 
 @app.get(
@@ -31,20 +32,22 @@ app = FastAPI(
         "(количество просмотров), а затем по времени готовки."
     ),
 )
-async def get_recipes(db: AsyncSession = Depends(get_db)):
+async def get_recipes(db: AsyncSession = Depends(get_db)):  # noqa: B008
     stmt = select(Recipe).order_by(desc(Recipe.views), Recipe.cooking_time)
-    result = await db.execute(stmt)
-    recipes = result.scalars().all()
-    return recipes
+    return (await db.execute(stmt)).scalars().all()
 
 
 @app.get(
     "/recipes/{recipe_id}",
     response_model=RecipeDetail,
     summary="Получить рецепт",
-    description="Возвращает детальную информацию о рецепте и увеличивает счётчик просмотров.",
+    description=(
+        "Возвращает детальную информацию о рецепте и увеличивает "
+        "счётчик просмотров."
+    ),
 )
-async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
+async def get_recipe(recipe_id: int,
+                     db: AsyncSession = Depends(get_db)):  # noqa: B008
     recipe = await db.get(Recipe, recipe_id)
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
@@ -72,7 +75,7 @@ async def get_recipe(recipe_id: int, db: AsyncSession = Depends(get_db)):
 )
 async def create_recipe(
     recipe: RecipeCreate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db),  # noqa: B008
 ):
     db_recipe = Recipe(
         title=recipe.title,
@@ -80,7 +83,6 @@ async def create_recipe(
         ingredients=", ".join(recipe.ingredients),
         description=recipe.description,
     )
-
     db.add(db_recipe)
     await db.commit()
     await db.refresh(db_recipe)

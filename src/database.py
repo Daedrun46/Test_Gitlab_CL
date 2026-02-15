@@ -1,7 +1,7 @@
 from typing import AsyncGenerator
 
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = "sqlite+aiosqlite:///./recipes.db"
@@ -19,9 +19,11 @@ AsyncSessionLocal = sessionmaker(
 
 Base = declarative_base()
 
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         yield session
+
 
 async def init_db():
     async with engine.begin() as conn:
